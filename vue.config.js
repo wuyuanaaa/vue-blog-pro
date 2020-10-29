@@ -1,0 +1,112 @@
+const path = require('path')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const isProduction = process.env.NODE_ENV === 'production'
+
+function resolve(dir) {
+  return path.join(__dirname, dir)
+}
+
+module.exports = {
+  // 输出文件目录
+  outputDir: 'blog-pro',
+  productionSourceMap: false,
+  devServer: {
+    proxy: {
+      '/': {
+        // target: 'https://blog.yuanaaa.top',
+        target: 'http://127.0.0.1:3003',
+        changeOrigin: true,
+        ws: false,
+        pathRewrite: {
+          // '^/api': ''
+        }
+      }
+    }
+  },
+  css: {
+    loaderOptions: {
+      css: {},
+      postcss: {
+        plugins: [
+          require('postcss-px2rem')({
+            remUnit: 56
+          })
+        ]
+      }
+    }
+  },
+  chainWebpack(config) {
+    // set svg-sprite-loader
+    config.module
+      .rule('svg')
+      .exclude.add(resolve('src/icons'))
+      .end()
+    config.module
+      .rule('icons')
+      .test(/\.svg$/)
+      .include.add(resolve('src/icons'))
+      .end()
+      .use('svg-sprite-loader')
+      .loader('svg-sprite-loader')
+      .options({
+        symbolId: 'icon-[name]'
+      })
+      .end()
+    config.externals({
+      'vue': 'Vue',
+      'vue-router': 'VueRouter',
+      'vuex': 'Vuex',
+      'element-ui': 'ELEMENT',
+      'axios': 'axios'
+    })
+    config
+      // https://webpack.js.org/configuration/devtool/#development
+      .when(!isProduction,
+        config => config.devtool('cheap-source-map')
+      )
+    config.when(isProduction, config => {
+      config.optimization.splitChunks({
+        chunks: 'all',
+        cacheGroups: {
+          libs: {
+            name: 'chunk-libs',
+            test: /[\\/]node_modules[\\/]/,
+            priority: 10,
+            chunks: 'initial' // only package third parties that are initially dependent
+          },
+          commons: {
+            name: 'chunk-commons',
+            test: resolve('src/components'), // can customize your rules
+            minChunks: 3, //  minimum common number
+            priority: 5,
+            reuseExistingChunk: true
+          }
+        }
+      })
+      config.optimization.runtimeChunk('single')
+    })
+    config
+      .when(process.env.NODE_ENV === 'development',
+        config => config.devtool('cheap-module-eval-source-map'),
+        config => config.plugin('compression')
+          .use(CompressionWebpackPlugin, [
+            {
+              algorithm: 'gzip',
+              test: /\.js$|\.html$|\.css/,
+              threshold: 10240,
+              deleteOriginalAssets: false
+            }
+          ])
+      )
+  },
+  // 第三方插件配置
+  pluginOptions: {
+    // less 全局变量
+    'style-resources-loader': {
+      preProcessor: 'less',
+      patterns: [
+        path.resolve(__dirname, './src/styles/variable.less')
+      ]
+    }
+  }
+}
