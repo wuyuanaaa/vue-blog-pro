@@ -81,6 +81,7 @@ export default {
           this.list = [...this.list, ...list]
           // 检查是否全部加载完
           this.hasMore = this.page < res.pages
+          this.hasMore && this.page++
         })
         .catch((e) => {
           console.log('getArticlesList err')
@@ -97,7 +98,6 @@ export default {
       const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
       const innerHeight = window.innerHeight || document.documentElement.clientHeight
       if (pageHeight - (scrollTop + innerHeight) < 60) {
-        this.page++
         this.fetchArticlesList()
       }
     }

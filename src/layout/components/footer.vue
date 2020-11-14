@@ -3,7 +3,7 @@
     <ul class="footer-list">
       <li class="list-item"><span class="heart">♥</span></li>
       <li class="list-item">所有者： <a href="https://github.com/wuyuanaaa">吴予安</a><span class="line"> | </span>上线于：<a href="https://admin.yuanaaa.top" target="_blank">2019/01/23</a></li>
-      <li class="list-item"><a href="http://www.beian.miit.gov.cn">鄂ICP备19000975号</a></li>
+      <li class="list-item"><a href="http://beian.miit.gov.cn">鄂ICP备19000975号</a></li>
     </ul>
   </div>
 </template>

@@ -13,8 +13,8 @@ module.exports = {
   devServer: {
     proxy: {
       '/': {
-        // target: 'https://blog.yuanaaa.top',
-        target: 'http://127.0.0.1:3003',
+        target: 'https://blog.yuanaaa.top',
+        // target: 'http://127.0.0.1:3003',
         changeOrigin: true,
         ws: false,
         pathRewrite: {

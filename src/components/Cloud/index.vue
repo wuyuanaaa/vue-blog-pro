@@ -37,7 +37,7 @@ export default {
   methods: {
     update() {
       this.$nextTick(() => {
-        this.$refs.cloud.style.boxShadow = cloudShadows(40)
+        this.$refs.cloud.style.boxShadow = cloudShadows(20)
       })
     }
   }
